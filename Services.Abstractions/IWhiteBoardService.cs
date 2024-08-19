@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Abstractions
 {
-    public interface IServiceManager
+    public interface IWhiteBoardService
     {
-        IWhiteBoardService WhiteBoardService();
     }
 }

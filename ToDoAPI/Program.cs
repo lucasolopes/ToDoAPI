@@ -2,8 +2,8 @@ using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using OnKanBan.Persistence;
 using Persistence.Repositories;
-using Services.Abstractions;
 using Services;
+using Services.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 

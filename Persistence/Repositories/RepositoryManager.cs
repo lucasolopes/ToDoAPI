@@ -20,6 +20,7 @@ namespace Persistence.Repositories
             _whiteBoardRepository = new Lazy<IWhiteBoardRepository>(() => new WhiteBoardRepository(context));
         }
 
-        public IWhiteBoardRepository WhiteBoardRepository => _whiteBoardRepository.Value;
+        public IWhiteBoardRepository WhiteBoardRepository() => _whiteBoardRepository.Value;
+        
     }
 }
