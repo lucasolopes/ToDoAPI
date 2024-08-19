@@ -23,7 +23,7 @@ namespace OnKanBan.Domain.Entities
         public string ListaId { get; set; }
         public Lista Lista { get; set; }
 
-        public List<Comments>? Comments { get; set; }
+        public ICollection<Comments>? Comments { get; set; }
 
     }
 }

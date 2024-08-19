@@ -17,7 +17,7 @@ namespace OnKanBan.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime LastUpdatedAt { get; set; } = DateTime.Now;
 
-        public List<Lista>? Listas { get; set; }
+        public ICollection<Lista>? Listas { get; set; }
 
     }
 }

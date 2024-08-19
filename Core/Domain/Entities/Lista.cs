@@ -17,6 +17,6 @@ namespace OnKanBan.Domain.Entities
         public string WhiteBoardId { get; set; }
         public WhiteBoard WhiteBoard { get; set; }
 
-        public List<Card>? Cards { get; set; }
+        public ICollection<Card>? Cards { get; set; }
     }
 }
