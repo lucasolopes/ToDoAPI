@@ -1,4 +1,31 @@
+using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
+using OnKanBan.Persistence;
+using Persistence.Repositories;
+using Services.Abstractions;
+using Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+builder.Services.AddScoped<IServiceManager, ServiceManager>();
+builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+
+
+builder.Services.AddDbContextPool<RepositoryDbContext>(b =>
+{
+
+    var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+    var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+    var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+    var connectionString = $"Server={dbHost};Database={dbName};User Id=sa;Password={dbPassword};";
+
+    b.UseSqlServer(connectionString);
+});
+
+
+
 
 // Add services to the container.
 
