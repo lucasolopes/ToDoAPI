@@ -63,5 +63,16 @@ namespace Presentation.Controllers
             }
             return Ok(whiteBoard);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteWhiteBoard(string id)
+        {
+            var whiteBoard = await _seviceManager.WhiteBoardService().DeleteAsync(id);
+            if(whiteBoard == null)
+            {
+                return NotFound();
+            }
+            return Ok(whiteBoard);
+        }
     }
 }
