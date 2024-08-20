@@ -11,7 +11,7 @@ namespace Services.Abstractions
     public interface IWhiteBoardService
     {
         Task<WhiteBoardResponse?> CreateAsync(WhiteBoardRequest whiteBoardRequest);
-        Task<bool?> DeleteAsync(string id);
+        Task DeleteAsync(string id);
         Task<WhiteBoardResponse?> GetByIdAsync(string id);
         Task<WhiteBoardResponse?> UpdateAsync(string id,WhiteBoardRequest whiteBoardRequest);
     }

@@ -71,7 +71,7 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task GetById_ShouldReturnNull()
+        public async Task GetById_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
@@ -80,14 +80,16 @@ namespace ToDo.Tests.Services
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
             //Act 
-            var result = await _serviceManager.WhiteBoardService().GetByIdAsync("0");
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService().GetByIdAsync("0"));
 
             //Assert
+            Assert.Equal("WhiteBoard not found", exception.Message);
+
             _repositoryManagerMock.Verify(
                 x => x.WhiteBoardRepository().GetByIdAsync(It.IsAny<string>()), 
                 Times.Once);
 
-            Assert.Null(result);
+           
         }
 
         [Fact]
@@ -95,6 +97,9 @@ namespace ToDo.Tests.Services
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
+
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+
             _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<WhiteBoard>())).ReturnsAsync(WhiteBoardFixture.PutWhiteBoard());
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
@@ -104,6 +109,11 @@ namespace ToDo.Tests.Services
                 .UpdateAsync("1",WhiteBoardRequestFixture.GetWhiteBoardRequest());
 
             //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Once);
+
+
             _repositoryManagerMock.Verify(
                 x => x.WhiteBoardRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<WhiteBoard>()), 
                 Times.Once);
@@ -118,67 +128,77 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task Update_ShouldReturnNull()
+        public async Task Update_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository()
-                .UpdateAsync(It.IsAny<string>(),It.IsAny<WhiteBoard>())).ReturnsAsync((WhiteBoard)null);
+
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
             //Act 
-            var result = await _serviceManager.WhiteBoardService()
-                .UpdateAsync("0",WhiteBoardRequestFixture.GetWhiteBoardRequest());
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService()
+                .UpdateAsync("0",WhiteBoardRequestFixture.GetWhiteBoardRequest()));
 
             //Assert
             _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<WhiteBoard>()), 
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
                 Times.Once);
 
-            Assert.Null(result);
+            Assert.Equal("WhiteBoard not found", exception.Message);
         }
 
         [Fact]
-        public async Task Delete_ShouldReturnTrue()
+        public async Task Delete_ShouldDeleteWhiteBoard_WhenIdExists()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository()
-                .DeleteAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()))
+            .Returns(Task.CompletedTask);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
             //Act 
-            var result = await _serviceManager.WhiteBoardService().DeleteAsync("1");
+            await _serviceManager.WhiteBoardService().DeleteAsync("1");
 
             //Assert
             _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()), 
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
                 Times.Once);
 
-            Assert.True(result);
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()),
+                Times.Once);
+
         }
 
         [Fact]
-        public async Task Delete_ShouldReturnNull()
+        public async Task Delete_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository()
-                .DeleteAsync(It.IsAny<string>())).ReturnsAsync((bool?)null);
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()))
+            .ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
             //Act 
-            var result = await _serviceManager.WhiteBoardService().DeleteAsync("0");
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService().DeleteAsync("0"));
 
             //Assert
             _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()), 
-                Times.Once);
+            x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+            Times.Once);
 
-            Assert.Null(result);
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()),
+                Times.Never);
+
+            Assert.Equal("WhiteBoard not found", exception.Message);
         }
 
 

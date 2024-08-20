@@ -43,16 +43,19 @@ namespace Persistence.Repositories
         }
 
 
-        public async Task<bool?> DeleteAsync(string id)
+        public async Task DeleteAsync(string id)
         {
             var whiteBoard = await GetByIdAsync(id);
-            if (whiteBoard == null)
-                return null;
-
-            _context.WhiteBoards.Remove(whiteBoard);
-            _context.SaveChanges();
-            return true;
+            if (whiteBoard != null)
+            {
+                _context.WhiteBoards.Remove(whiteBoard);
+                _context.SaveChanges();
+            }
         }
 
+        public Task<bool> ExistsAsync(string id)
+        {
+            return _context.WhiteBoards.AnyAsync(wb => wb.Id == id);
+        }
     }
 }

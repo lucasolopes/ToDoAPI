@@ -11,8 +11,9 @@ namespace Domain.Repositories
     public interface IWhiteBoardRepository
     {
         Task<WhiteBoard?> CreateAsync(WhiteBoard whiteBoard);
-        Task<bool?> DeleteAsync(string id);
+        Task DeleteAsync(string id);
         Task<WhiteBoard?> GetByIdAsync(string id);
         Task<WhiteBoard?> UpdateAsync(string id,WhiteBoard whiteBoard);
+        Task<bool> ExistsAsync(string id);
     }
 }

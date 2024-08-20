@@ -7,6 +7,7 @@ using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
 using Shared.Requests;
+using ToDoAPI.Middleeare;
 using Validators;
 
 
@@ -47,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
