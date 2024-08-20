@@ -1,17 +1,21 @@
 using Domain.Repositories;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using OnKanBan.Domain.Entities;
 using OnKanBan.Persistence;
 using Persistence.Repositories;
 using Services;
 using Services.Abstractions;
+using Shared.Requests;
+using Validators;
+
 
 var builder = WebApplication.CreateBuilder(args);
-
-
 
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 
+builder.Services.AddScoped<IValidator<WhiteBoardRequest>, WhiteBoardValidator>();
 
 builder.Services.AddDbContextPool<RepositoryDbContext>(b =>
 {
@@ -30,6 +34,7 @@ builder.Services.AddDbContextPool<RepositoryDbContext>(b =>
 // Add services to the container.
 
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
