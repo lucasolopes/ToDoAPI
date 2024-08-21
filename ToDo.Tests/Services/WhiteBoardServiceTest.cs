@@ -1,5 +1,6 @@
 ﻿using Castle.Core.Logging;
 using Domain.Repositories;
+using FluentValidation;
 using Moq;
 using OnKanBan.Domain.Entities;
 using Services;
@@ -42,6 +43,25 @@ namespace ToDo.Tests.Services
             Assert.Equal("Test Description", result.Description);
             Assert.Equal(new DateTime(2024, 1, 1), result.CreatedAt);
             Assert.Equal(new DateTime(2024, 1, 1), result.LastUpdatedAt);
+        }
+
+        [Fact]
+        public async Task CreateAsync_ShoudReturnValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act 
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.WhiteBoardService()
+                .CreateAsync(new WhiteBoardRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().CreateAsync(It.IsAny<WhiteBoard>()), 
+                Times.Never);
+
+            Assert.Equal("Validation failed: \r\n -- Name: Name é Obrigatorio! Severity: Error", exception.Message);
         }
 
         [Fact]
