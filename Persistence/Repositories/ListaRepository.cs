@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Persistence.Repositories
 {
-    internal class ListaRepository : IListaRepository
+    internal sealed class ListaRepository : IListaRepository
     {
         private readonly RepositoryDbContext _context;
 

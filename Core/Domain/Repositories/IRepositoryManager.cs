@@ -10,5 +10,6 @@ namespace Domain.Repositories
     {
         IWhiteBoardRepository WhiteBoardRepository();
         IListaRepository ListaRepository();
+        ICardRepository CardRepository();
     }
 }

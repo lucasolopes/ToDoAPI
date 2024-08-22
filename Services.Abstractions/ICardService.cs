@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Services.Abstractions
 {
-    public interface IServiceManager
+    public interface ICardService
     {
-        IWhiteBoardService WhiteBoardService();
-        IListaService ListaService();
-        ICardService CardService();
     }
 }
