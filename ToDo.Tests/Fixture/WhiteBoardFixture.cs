@@ -33,5 +33,14 @@ namespace ToDo.Tests.Fixture
                 LastUpdatedAt = new DateTime(2024, 2, 2),
             };
         }
+
+        internal static WhiteBoardRequest GetWhiteBoardRequest()
+        {
+            return new WhiteBoardRequest
+            {
+                Name = "Test WhiteBoard",
+                Description = "Test Description",
+            };
+        }
     }
 }

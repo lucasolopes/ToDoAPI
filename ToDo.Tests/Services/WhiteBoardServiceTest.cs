@@ -29,7 +29,7 @@ namespace ToDo.Tests.Services
             
             //Act 
             var result = await _serviceManager.WhiteBoardService()
-                .CreateAsync(WhiteBoardRequestFixture.GetWhiteBoardRequest());
+                .CreateAsync(WhiteBoardFixture.GetWhiteBoardRequest());
 ;
             //Assert
             _repositoryManagerMock.Verify(
@@ -126,7 +126,7 @@ namespace ToDo.Tests.Services
 
             //Act 
             var result = await _serviceManager.WhiteBoardService()
-                .UpdateAsync("1",WhiteBoardRequestFixture.GetWhiteBoardRequest());
+                .UpdateAsync("1",WhiteBoardFixture.GetWhiteBoardRequest());
 
             //Assert
             _repositoryManagerMock.Verify(
@@ -159,7 +159,7 @@ namespace ToDo.Tests.Services
 
             //Act 
             var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService()
-                .UpdateAsync("0",WhiteBoardRequestFixture.GetWhiteBoardRequest()));
+                .UpdateAsync("0",WhiteBoardFixture.GetWhiteBoardRequest()));
 
             //Assert
             _repositoryManagerMock.Verify(
