@@ -9,5 +9,6 @@ namespace Services.Abstractions
     public interface IServiceManager
     {
         IWhiteBoardService WhiteBoardService();
+        IListaService ListaService();
     }
 }

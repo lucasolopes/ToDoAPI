@@ -12,13 +12,16 @@ namespace Services
     {
         //fazer isso para todas as classes service para evitar a criação de instâncias desnecessárias
         private readonly Lazy<IWhiteBoardService> whiteBoardService;
+        private readonly Lazy<IListaService> listaService;
 
         public ServiceManager(IRepositoryManager repositoryManager)
         {
             whiteBoardService = new Lazy<IWhiteBoardService>(() => new WhiteBoardService(repositoryManager));
+            listaService = new Lazy<IListaService>(() => new ListaService(repositoryManager));
         }
 
         public IWhiteBoardService WhiteBoardService() => whiteBoardService.Value;
+        public IListaService ListaService() => listaService.Value;
 
     }
 }

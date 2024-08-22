@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shared.Requests;
+using Shared.Responses;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,5 +20,24 @@ namespace OnKanBan.Domain.Entities
         public WhiteBoard WhiteBoard { get; set; }
 
         public ICollection<Card>? Cards { get; set; }
+
+        public ListaResponse Convert() => new ListaResponse
+        {
+            Id = this.Id,
+            Name = this.Name,
+            Position = this.Position,
+            WhiteBoardId = this.WhiteBoardId
+        };
+
+        public Lista()
+        {
+        }
+
+        public Lista(ListaRequest listaRequest) {
+
+            this.Name = listaRequest.Name;
+            this.Position = listaRequest.Position;
+            this.WhiteBoardId = listaRequest.WhiteBoardId;
+        }
     }
 }
