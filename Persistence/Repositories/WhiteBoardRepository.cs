@@ -17,25 +17,22 @@ namespace Persistence.Repositories
 
         public WhiteBoardRepository(RepositoryDbContext context) => _context = context;
 
-        public async Task<WhiteBoard?> CreateAsync(WhiteBoard whiteBoard)
+        public async Task<WhiteBoard> CreateAsync(WhiteBoard whiteBoard)
         {
             await _context.AddAsync(whiteBoard);
             await _context.SaveChangesAsync();
             return _context.WhiteBoards.FirstOrDefault(wb=> wb.Name == whiteBoard.Name);
         }
 
-        public async Task<WhiteBoard?> GetByIdAsync(string id)
+        public async Task<WhiteBoard> GetByIdAsync(string id)
         {
-            WhiteBoard? whiteBoard = await _context.WhiteBoards.AsNoTracking().FirstOrDefaultAsync(wb => wb.Id == id);
+            WhiteBoard whiteBoard = await _context.WhiteBoards.AsNoTracking().FirstOrDefaultAsync(wb => wb.Id == id);
 
             return whiteBoard;
         }
 
-        public async Task<WhiteBoard?> UpdateAsync(string id,WhiteBoard whiteBoard)
+        public async Task<WhiteBoard> UpdateAsync(string id,WhiteBoard whiteBoard)
         {
-            var exist = await GetByIdAsync(id);
-            if (exist == null) return null;
-
             whiteBoard.Id = id;
             _context.Entry(whiteBoard).State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -45,12 +42,9 @@ namespace Persistence.Repositories
 
         public async Task DeleteAsync(string id)
         {
-            var whiteBoard = await GetByIdAsync(id);
-            if (whiteBoard != null)
-            {
-                _context.WhiteBoards.Remove(whiteBoard);
-                _context.SaveChanges();
-            }
+            WhiteBoard whiteBoard = await GetByIdAsync(id);
+            _context.WhiteBoards.Remove(whiteBoard);
+            _context.SaveChanges();
         }
 
         public Task<bool> ExistsAsync(string id)

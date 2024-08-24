@@ -31,39 +31,45 @@ namespace Services
 
             WhiteBoard whiteBoard = await _repositoryManager.WhiteBoardRepository()
             .CreateAsync(new WhiteBoard(whiteBoardRequest));
+
             return whiteBoard.Convert();
         }
 
         public async Task<WhiteBoardResponse> GetByIdAsync(string id)
         {
+            await ExistsAsync(id);
+
             var whiteBoard = await _repositoryManager.WhiteBoardRepository().GetByIdAsync(id);
-            if(whiteBoard == null)
-                throw new KeyNotFoundException("WhiteBoard not found");
-
-
 
             return whiteBoard.Convert();
         }
 
         public async Task<WhiteBoardResponse?> UpdateAsync(string id,WhiteBoardRequest whiteBoardRequest)
         {
-            if(!await _repositoryManager.WhiteBoardRepository().ExistsAsync(id))
-                throw new KeyNotFoundException("WhiteBoard not found");
+            var validator = new WhiteBoardValidator();
+            var validationResult = await validator.ValidateAsync(whiteBoardRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
 
-            WhiteBoard? whiteBoard = await _repositoryManager.WhiteBoardRepository().UpdateAsync(id,new WhiteBoard(whiteBoardRequest));
+            await ExistsAsync(id);
 
-            return whiteBoard == null ? null : whiteBoard.Convert();
+            WhiteBoard whiteBoard = await _repositoryManager.WhiteBoardRepository().UpdateAsync(id,new WhiteBoard(whiteBoardRequest));
+
+            return whiteBoard.Convert();
         }
 
         public async Task DeleteAsync(string id)
         {
-            if (!await _repositoryManager.WhiteBoardRepository().ExistsAsync(id))
-                throw new KeyNotFoundException("WhiteBoard not found");
+             await ExistsAsync(id);
 
              await _repositoryManager.WhiteBoardRepository().DeleteAsync(id);
         }
 
-
+        private async Task ExistsAsync(string id)
+        {
+            if (!(await _repositoryManager.WhiteBoardRepository().ExistsAsync(id)))
+                throw new KeyNotFoundException("WhiteBoard not found");
+        }
 
     }
 }

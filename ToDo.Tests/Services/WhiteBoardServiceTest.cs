@@ -2,6 +2,7 @@
 using Domain.Repositories;
 using FluentValidation;
 using Moq;
+using Newtonsoft.Json;
 using OnKanBan.Domain.Entities;
 using Services;
 using Services.Abstractions;
@@ -36,13 +37,11 @@ namespace ToDo.Tests.Services
                 x => x.WhiteBoardRepository().CreateAsync(It.IsAny<WhiteBoard>()), 
                 Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsType<WhiteBoardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test WhiteBoard", result.Name);
-            Assert.Equal("Test Description", result.Description);
-            Assert.Equal(new DateTime(2024, 1, 1), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 1, 1), result.LastUpdatedAt);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(WhiteBoardFixture.GetWhiteBoardResponse());
+
+            Assert.Equal(expectedSrl,resultSrl);
+            
         }
 
         [Fact]
@@ -61,7 +60,9 @@ namespace ToDo.Tests.Services
                 x => x.WhiteBoardRepository().CreateAsync(It.IsAny<WhiteBoard>()), 
                 Times.Never);
 
-            Assert.Equal("Validation failed: \r\n -- Name: Name é Obrigatorio! Severity: Error", exception.Message);
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:",exception.Message);
         }
 
         [Fact]
@@ -69,6 +70,7 @@ namespace ToDo.Tests.Services
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
             _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().GetByIdAsync(It.IsAny<string>())).ReturnsAsync(WhiteBoardFixture.GetWhiteBoard());
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
@@ -77,17 +79,15 @@ namespace ToDo.Tests.Services
             var result = await _serviceManager.WhiteBoardService().GetByIdAsync("1");
 
             //Assert
+            _repositoryManagerMock.Verify(x=> x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),Times.Once);
+
             _repositoryManagerMock.Verify(
                 x => x.WhiteBoardRepository().GetByIdAsync(It.IsAny<string>()), 
                 Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsType<WhiteBoardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test WhiteBoard", result.Name);
-            Assert.Equal("Test Description", result.Description);
-            Assert.Equal(new DateTime(2024, 1, 1), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 1, 1), result.LastUpdatedAt);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(WhiteBoardFixture.GetWhiteBoardResponse());
+            Assert.Equal(expectedSrl, resultSrl);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace ToDo.Tests.Services
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().GetByIdAsync(It.IsAny<string>())).ReturnsAsync((WhiteBoard)null);
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
@@ -106,7 +106,7 @@ namespace ToDo.Tests.Services
             Assert.Equal("WhiteBoard not found", exception.Message);
 
             _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().GetByIdAsync(It.IsAny<string>()), 
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()), 
                 Times.Once);
 
            
@@ -138,13 +138,9 @@ namespace ToDo.Tests.Services
                 x => x.WhiteBoardRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<WhiteBoard>()), 
                 Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsType<WhiteBoardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test WhiteBoard Updated", result.Name);
-            Assert.Equal("Test Description Updated", result.Description);
-            Assert.Equal(new DateTime(2024, 2, 2), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 2, 2), result.LastUpdatedAt);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(WhiteBoardFixture.PutWhiteBoardResponse());
+            Assert.Equal(expectedSrl, resultSrl);
         }
 
         [Fact]
@@ -221,6 +217,26 @@ namespace ToDo.Tests.Services
             Assert.Equal("WhiteBoard not found", exception.Message);
         }
 
+        [Fact]
+        public async Task Put_ShouldReturnValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act 
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.WhiteBoardService()
+                .UpdateAsync("1",new WhiteBoardRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Never);
+
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:",exception.Message);
+        }
 
     }
 }

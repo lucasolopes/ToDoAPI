@@ -1,5 +1,6 @@
 ﻿using OnKanBan.Domain.Entities;
 using Shared.Requests;
+using Shared.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace ToDo.Tests.Fixture
                 Id = "1",
                 Name = "Test WhiteBoard Updated",
                 Description = "Test Description Updated",
-                CreatedAt = new DateTime(2024, 2, 2),
+                CreatedAt = new DateTime(2024, 1, 1),
                 LastUpdatedAt = new DateTime(2024, 2, 2),
             };
         }
@@ -42,5 +43,24 @@ namespace ToDo.Tests.Fixture
                 Description = "Test Description",
             };
         }
+
+        
+        internal static WhiteBoardResponse GetWhiteBoardResponse() => new WhiteBoardResponse
+        {
+            Id = "1",
+            Name = "Test WhiteBoard",
+            Description = "Test Description",
+            CreatedAt = new DateTime(2024, 1, 1),
+            LastUpdatedAt = new DateTime(2024, 1, 1)
+        };
+
+        internal static WhiteBoardResponse PutWhiteBoardResponse() => new WhiteBoardResponse
+        {
+            Id = "1",
+            Name = "Test WhiteBoard Updated",
+            Description = "Test Description Updated",
+            CreatedAt = new DateTime(2024, 1, 1),
+            LastUpdatedAt = new DateTime(2024, 2, 2)
+        };
     }
 }
