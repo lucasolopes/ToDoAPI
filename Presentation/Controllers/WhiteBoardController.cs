@@ -11,11 +11,9 @@ namespace Presentation.Controllers
     public class WhiteBoardController : ControllerBase
     {
         private readonly IServiceManager _seviceManager;
-        private readonly IValidator<WhiteBoardRequest> _validator;
 
-        public WhiteBoardController(IServiceManager serviceManager, IValidator<WhiteBoardRequest> validator) {
+        public WhiteBoardController(IServiceManager serviceManager) {
             _seviceManager = serviceManager;
-            _validator = validator;
         }
         
 
