@@ -103,13 +103,12 @@ namespace ToDo.Tests.Services
             var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService().GetByIdAsync("0"));
 
             //Assert
-            Assert.Equal("WhiteBoard not found", exception.Message);
-
             _repositoryManagerMock.Verify(
                 x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()), 
                 Times.Once);
 
-           
+            Assert.IsType<KeyNotFoundException>(exception);
+            Assert.Equal("WhiteBoard not found", exception.Message);
         }
 
         [Fact]
@@ -218,7 +217,7 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task Put_ShouldReturnValidationException()
+        public async Task Update_ShouldReturnValidationException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();

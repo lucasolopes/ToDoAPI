@@ -129,24 +129,22 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task GetByIdAsync_ShouldReturnKeyNotFoundException()
+        public async Task UpdateAsync_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-
             _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
             //Act
-            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => 
-                _serviceManager.ListaService().GetByIdAsync("0"));
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.ListaService().UpdateAsync("0", ListaFixture.GetListaRequest()));
 
             //Assert
-            _repositoryManagerMock.Verify(
-                x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once());
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once);
 
             Assert.Equal("Lista not found", exception.Message);
+
         }
 
         [Fact]
@@ -189,7 +187,7 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task PutAsync_ShouldReturnValidationException()
+        public async Task UpdateAsync_ShouldReturnValidationException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();

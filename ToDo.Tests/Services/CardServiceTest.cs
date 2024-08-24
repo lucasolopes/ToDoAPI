@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories;
 using FluentValidation;
 using Moq;
+using Newtonsoft.Json;
 using OnKanBan.Domain.Entities;
 using Services;
 using Shared.Requests;
@@ -34,13 +35,9 @@ namespace ToDo.Tests.Services
                 x => x.CardRepository().CreateAsync(It.IsAny<Card>()), 
                 Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsType<CardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Card", result.Title);
-            Assert.Equal("Test Description", result.Description);
-            Assert.Equal(new DateTime(2024, 1, 1), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 1, 1), result.LastUpdatedAt);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(CardFixture.GetCardResponse());
+
         }
 
         [Fact]
@@ -86,13 +83,10 @@ namespace ToDo.Tests.Services
                 Times.Once);
             
 
-            Assert.NotNull(result);
-            Assert.IsType<CardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Card", result.Title);
-            Assert.Equal("Test Description", result.Description);
-            Assert.Equal(new DateTime(2024, 1, 1), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 1, 1), result.LastUpdatedAt);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(CardFixture.GetCardResponse());
+
+            Assert.Equal(expectedSrl, resultSrl);
         }
 
         [Fact]
@@ -139,15 +133,11 @@ namespace ToDo.Tests.Services
             _repositoryManagerMock.Verify(
                 x => x.CardRepository().UpdateAsync(It.IsAny<string>(), It.IsAny<Card>()), Times.Once);
 
-            Assert.NotNull(result);
-            Assert.IsType<CardResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Card Update", result.Title);
-            Assert.Equal("Test Description Update", result.Description);
-            Assert.Equal(new DateTime(2024, 2, 2), result.CreatedAt);
-            Assert.Equal(new DateTime(2024, 2, 2), result.LastUpdatedAt);
-            Assert.Equal(2,result.Position);
-            Assert.Equal(StatusEnum.Done.ToString(), result.Status.ToString());
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(CardFixture.PutCardResponse());
+
+            Assert.Equal(expectedSrl, resultSrl);
+
         }
 
         [Fact]

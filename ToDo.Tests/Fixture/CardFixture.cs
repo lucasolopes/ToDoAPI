@@ -1,5 +1,6 @@
 ﻿using OnKanBan.Domain.Entities;
 using Shared.Requests;
+using Shared.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,32 @@ namespace ToDo.Tests.Fixture
             Lista = ListaFixture.GetLista(),
             Position = 2,
             Status = StatusEnum.Done
+        };
+
+        internal static CardResponse GetCardResponse() => new CardResponse
+        {
+            Id = "1",
+            Title = "Test Card",
+            Description = "Test Description",
+            CreatedAt = new DateTime(2024, 1, 1),
+            LastUpdatedAt = new DateTime(2024, 1, 1),
+            DateCompleted = null,
+            DateInit = null,
+            Position = 1,
+            Status = StatusEnum.ToDo.ToString(),
+        };
+
+        internal static CardResponse PutCardResponse() => new CardResponse
+        {
+            Id = "1",
+            Title = "Test Card Update",
+            Description = "Test Description Update",
+            CreatedAt = new DateTime(2024, 2, 2),
+            LastUpdatedAt = new DateTime(2024, 2, 2),
+            DateCompleted = null,
+            DateInit = null,
+            Position = 2,
+            Status = StatusEnum.Done.ToString(),
         };
     }
 }
