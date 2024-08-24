@@ -1,5 +1,6 @@
 ﻿using OnKanBan.Domain.Entities;
 using Shared.Requests;
+using Shared.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,12 +28,28 @@ namespace ToDo.Tests.Fixture
             };
 
 
-        internal static Lista PutListaRequest() => new Lista
+        internal static Lista PutLista() => new Lista
             {
                 Id = "1",
                 Name = "Test Lista Update",
                 Position = 2,
                 WhiteBoardId = "1",
+            };
+
+        internal static ListaResponse GetListaResponse() => new ListaResponse
+            {
+                Id = "1",
+                Name = "Test Lista",
+                Position = 1,
+                WhiteBoardId = "1"
+            };
+
+        internal static ListaResponse PutListaResponse() => new ListaResponse
+            {
+                Id = "1",
+                Name = "Test Lista Update",
+                Position = 2,
+                WhiteBoardId = "1"
             };
         
     }

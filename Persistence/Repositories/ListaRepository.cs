@@ -17,23 +17,20 @@ namespace Persistence.Repositories
 
         public ListaRepository(RepositoryDbContext context) => _context = context;
 
-        public async Task<Lista?> GetByIdAsync(string id) { 
+        public async Task<Lista> GetByIdAsync(string id) { 
         
             return await _context.Lista.AsNoTracking().FirstOrDefaultAsync(l => l.Id == id);
         }
 
-        public async Task<Lista?> CreateAsync(Lista listaRequest)
+        public async Task<Lista> CreateAsync(Lista listaRequest)
         {
             await _context.Lista.AddAsync(listaRequest);
             await _context.SaveChangesAsync();
             return _context.Lista.AsNoTracking().FirstOrDefault(l => l.Name == listaRequest.Name);
         }
 
-        public async Task<Lista?> UpdateAsync(string id, Lista listaRequest)
+        public async Task<Lista> UpdateAsync(string id, Lista listaRequest)
         {
-            var exist = await GetByIdAsync(id);
-            if(exist == null) return null;
-
             listaRequest.Id = id;
             _context.Entry(listaRequest).State = EntityState.Modified;
             await _context.SaveChangesAsync();
@@ -47,12 +44,10 @@ namespace Persistence.Repositories
 
         public async Task DeleteAsync(string id)
         {
-            var lista = await GetByIdAsync(id);
-            if (lista != null)
-            {
-                _context.Lista.Remove(lista);
-                _context.SaveChanges();
-            }
+            Lista lista = await GetByIdAsync(id);
+
+            _context.Lista.Remove(lista);
+            _context.SaveChanges();
         }
     }
 }

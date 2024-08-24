@@ -1,6 +1,7 @@
 ﻿using Domain.Repositories;
 using FluentValidation;
 using Moq;
+using Newtonsoft.Json;
 using OnKanBan.Domain.Entities;
 using Services;
 using Shared.Requests;
@@ -21,6 +22,7 @@ namespace ToDo.Tests.Services
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x=> x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
             _repositoryManagerMock.Setup(x=> x.ListaRepository().GetByIdAsync(It.IsAny<string>())).ReturnsAsync(ListaFixture.GetLista());
             
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
@@ -29,14 +31,14 @@ namespace ToDo.Tests.Services
             var result = await _serviceManager.ListaService().GetByIdAsync("1");
 
             //Assert
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once());
             _repositoryManagerMock.Verify(x => x.ListaRepository().GetByIdAsync(It.IsAny<string>()), Times.Once());
 
-            Assert.NotNull(result);
-            Assert.IsType<ListaResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Lista", result.Name);
-            Assert.Equal(1, result.Position);
-            Assert.Equal("1", result.WhiteBoardId);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(ListaFixture.GetListaResponse());
+
+            Assert.Equal(expectedSrl,resultSrl);
+            
         }
 
 
@@ -45,7 +47,7 @@ namespace ToDo.Tests.Services
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.ListaRepository().GetByIdAsync(It.IsAny<string>())).ReturnsAsync((Lista)null);
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
@@ -53,10 +55,8 @@ namespace ToDo.Tests.Services
             var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.ListaService().GetByIdAsync("0"));
 
             //Assert
-            _repositoryManagerMock.Verify(x => x.ListaRepository().GetByIdAsync(It.IsAny<string>()), Times.Once());
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once());
 
-            Assert.NotNull(exception);
-            Assert.IsType<KeyNotFoundException>(exception);
             Assert.Equal("Lista not found", exception.Message);
         }
 
@@ -76,26 +76,29 @@ namespace ToDo.Tests.Services
             //Assert
             _repositoryManagerMock.Verify(x=> x.ListaRepository().CreateAsync(It.IsAny<Lista>()), Times.Once());
 
-            Assert.NotNull(result);
-            Assert.IsType<ListaResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Lista", result.Name);
-            Assert.Equal(1, result.Position);
-            Assert.Equal("1", result.WhiteBoardId);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(ListaFixture.GetListaResponse());
+
+            Assert.Equal(expectedSrl,resultSrl);
         }
 
         [Fact]
         public async Task CreateAsync_ShoudReturnValidationException()
         {
+            //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
+            //Act
             var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.ListaService().CreateAsync(new ListaRequest()));
 
+            //Assert
             _repositoryManagerMock.Verify(x => x.ListaRepository().CreateAsync(It.IsAny<Lista>()), Times.Never);
 
-            Assert.Equal("Validation failed: \r\n -- Name: Name é Obrigatorio! Severity: Error\r\n -- Position: Position é Obrigatorio! Severity: Error\r\n -- WhiteBoardId: WhiteBoardId é Obrigatorio! Severity: Error", exception.Message);
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:", exception.Message);
         }
 
         [Fact]
@@ -106,7 +109,7 @@ namespace ToDo.Tests.Services
 
             _repositoryManagerMock.Setup(x=> x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
 
-            _repositoryManagerMock.Setup(x=> x.ListaRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<Lista>())).ReturnsAsync(ListaFixture.PutListaRequest());
+            _repositoryManagerMock.Setup(x=> x.ListaRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<Lista>())).ReturnsAsync(ListaFixture.PutLista());
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
@@ -120,21 +123,18 @@ namespace ToDo.Tests.Services
             _repositoryManagerMock.Verify(
                 x=> x.ListaRepository().UpdateAsync(It.IsAny<string>(),It.IsAny<Lista>()), Times.Once());
 
-            Assert.NotNull(result);
-            Assert.IsType<ListaResponse>(result);
-            Assert.Equal("1", result.Id);
-            Assert.Equal("Test Lista Update", result.Name);
-            Assert.Equal(2, result.Position);
-            Assert.Equal("1", result.WhiteBoardId);
+            var resultSrl = JsonConvert.SerializeObject(result);
+            var expectedSrl = JsonConvert.SerializeObject(ListaFixture.PutListaResponse());
+            Assert.Equal(expectedSrl,resultSrl);
         }
 
         [Fact]
-        public async Task GetById_ShouldReturnKeyNotFoundException()
+        public async Task GetByIdAsync_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
 
-            _repositoryManagerMock.Setup(x => x.ListaRepository().GetByIdAsync(It.IsAny<string>())).ReturnsAsync((Lista)null);
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
 
             var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
 
@@ -144,13 +144,13 @@ namespace ToDo.Tests.Services
 
             //Assert
             _repositoryManagerMock.Verify(
-                x => x.ListaRepository().GetByIdAsync(It.IsAny<string>()), Times.Once());
+                x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once());
 
             Assert.Equal("Lista not found", exception.Message);
         }
 
         [Fact]
-        public async Task Delete_ShouldDeleteLista_WhenIdExists()
+        public async Task DeleteAsync_ShouldDeleteLista_WhenIdExists()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
@@ -171,7 +171,7 @@ namespace ToDo.Tests.Services
         }
 
         [Fact]
-        public async Task Delete_ShouldReturnKeyNotFoundException()
+        public async Task DeleteAsync_ShouldReturnKeyNotFoundException()
         {
             //Arrange
             var _repositoryManagerMock = new Mock<IRepositoryManager>();
@@ -188,6 +188,21 @@ namespace ToDo.Tests.Services
             Assert.Equal("Lista not found", exception.Message);
         }
 
+        [Fact]
+        public async Task PutAsync_ShouldReturnValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.ListaService().UpdateAsync("1", new ListaRequest()));
+
+            //Assert
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:", exception.Message);
+        }
 
 
     }

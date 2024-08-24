@@ -24,10 +24,9 @@ namespace Services
 
         public async Task<ListaResponse> GetByIdAsync(string id)
         {
-            var lista = await _repositoryManager.ListaRepository().GetByIdAsync(id);
+            await ExistAsync(id);
 
-            if(lista == null)
-                throw new KeyNotFoundException("Lista not found");
+            var lista = await _repositoryManager.ListaRepository().GetByIdAsync(id);
 
             return lista.Convert();
         }
@@ -47,11 +46,16 @@ namespace Services
 
         public async Task<ListaResponse> UpdateAsync(string id, ListaRequest listaRequest)
         {
-            ExistAsync(id);
+            var validator = new ListaValidator();
+            var validationResult = validator.Validate(listaRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
 
-            Lista? lista = await _repositoryManager.ListaRepository().UpdateAsync(id, new Lista(listaRequest));
+            await ExistAsync(id);
 
-            return lista == null ? null : lista.Convert();
+            Lista lista = await _repositoryManager.ListaRepository().UpdateAsync(id, new Lista(listaRequest));
+
+            return lista.Convert();
         }
 
         public async Task DeleteAsync(string id)
