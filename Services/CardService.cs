@@ -40,8 +40,6 @@ namespace Services
             await ExistsAsync(id);
 
             var card = await _repositoryManager.CardRepository().GetByIdAsync(id);
-            if (card == null)
-                throw new KeyNotFoundException("Card not found");
 
             return card.Convert();
         }
