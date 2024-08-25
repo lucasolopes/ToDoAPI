@@ -65,11 +65,35 @@ namespace Services
              await _repositoryManager.WhiteBoardRepository().DeleteAsync(id);
         }
 
+        public async Task UpdateNameAsync(string id, WhiteBoardPutNameRequest whiteBoardPutNameRequest)
+        {
+            var validator = new WhiteBoardPutNameValidator();
+            var validationResult = await validator.ValidateAsync(whiteBoardPutNameRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+            
+            await ExistsAsync(id);
+
+            await _repositoryManager.WhiteBoardRepository().UpdateNameAsync(id,new WhiteBoard(whiteBoardPutNameRequest));
+        }
+
+        public async Task UpdateDescriptionAsync(string id, WhiteBoardPutDescriptionRequest whiteBoardPutDescriptionRequest)
+        {
+            var validator = new WhiteBoardPutDescriptionValidator();
+            var validationResult =  await validator.ValidateAsync(whiteBoardPutDescriptionRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
+            await ExistsAsync(id);
+
+            await _repositoryManager.WhiteBoardRepository().UpdateDescriptionAsync(id,new WhiteBoard(whiteBoardPutDescriptionRequest));
+        }
+
         private async Task ExistsAsync(string id)
         {
             if (!(await _repositoryManager.WhiteBoardRepository().ExistsAsync(id)))
                 throw new KeyNotFoundException("WhiteBoard not found");
         }
-
+        
     }
 }

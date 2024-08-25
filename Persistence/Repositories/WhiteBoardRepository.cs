@@ -51,5 +51,25 @@ namespace Persistence.Repositories
         {
             return _context.WhiteBoards.AnyAsync(wb => wb.Id == id);
         }
+
+        public async Task UpdateNameAsync(string id, WhiteBoard whiteBoard)
+        {
+            WhiteBoard whiteBoardOld =  await GetByIdAsync(id);
+            whiteBoardOld.Name = whiteBoard.Name;
+            whiteBoardOld.LastUpdatedAt = whiteBoard.LastUpdatedAt;
+
+            _context.Entry(whiteBoardOld).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateDescriptionAsync(string id, WhiteBoard whiteBoard)
+        {
+            WhiteBoard whiteBoardOld = await GetByIdAsync(id);
+            whiteBoardOld.Description = whiteBoard.Description;
+            whiteBoardOld.LastUpdatedAt = whiteBoard.LastUpdatedAt;
+
+            _context.Entry(whiteBoardOld).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
     }
 }

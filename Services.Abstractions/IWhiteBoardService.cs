@@ -10,9 +10,11 @@ namespace Services.Abstractions
 {
     public interface IWhiteBoardService
     {
-        Task<WhiteBoardResponse?> CreateAsync(WhiteBoardRequest whiteBoardRequest);
+        Task<WhiteBoardResponse> CreateAsync(WhiteBoardRequest whiteBoardRequest);
         Task DeleteAsync(string id);
-        Task<WhiteBoardResponse?> GetByIdAsync(string id);
-        Task<WhiteBoardResponse?> UpdateAsync(string id,WhiteBoardRequest whiteBoardRequest);
+        Task<WhiteBoardResponse> GetByIdAsync(string id);
+        Task<WhiteBoardResponse> UpdateAsync(string id,WhiteBoardRequest whiteBoardRequest);
+        Task UpdateNameAsync(string id,WhiteBoardPutNameRequest whiteBoardPutNameRequest);
+        Task UpdateDescriptionAsync(string id,WhiteBoardPutDescriptionRequest whiteBoardPutDescriptionRequest);
     }
 }

@@ -15,5 +15,7 @@ namespace Domain.Repositories
         Task<WhiteBoard> GetByIdAsync(string id);
         Task<WhiteBoard> UpdateAsync(string id,WhiteBoard whiteBoard);
         Task<bool> ExistsAsync(string id);
+        Task UpdateNameAsync(string id, WhiteBoard whiteBoard);
+        Task UpdateDescriptionAsync(string id, WhiteBoard whiteBoard);
     }
 }

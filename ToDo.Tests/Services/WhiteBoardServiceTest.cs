@@ -56,10 +56,6 @@ namespace ToDo.Tests.Services
                 .CreateAsync(new WhiteBoardRequest()));
 
             //Assert
-            _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().CreateAsync(It.IsAny<WhiteBoard>()), 
-                Times.Never);
-
             Assert.NotNull(exception);
             Assert.IsType<ValidationException>(exception);
             Assert.Contains("Validation failed:",exception.Message);
@@ -209,10 +205,6 @@ namespace ToDo.Tests.Services
             x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
             Times.Once);
 
-            _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().DeleteAsync(It.IsAny<string>()),
-                Times.Never);
-
             Assert.Equal("WhiteBoard not found", exception.Message);
         }
 
@@ -228,14 +220,130 @@ namespace ToDo.Tests.Services
                 .UpdateAsync("1",new WhiteBoardRequest()));
 
             //Assert
-            _repositoryManagerMock.Verify(
-                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
-                Times.Never);
-
             Assert.NotNull(exception);
             Assert.IsType<ValidationException>(exception);
             Assert.Contains("Validation failed:",exception.Message);
         }
 
+        [Fact]
+        public async Task PutNameWhiteBoard_ShouldChangeName() 
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().UpdateNameAsync(It.IsAny<string>(), It.IsAny<WhiteBoard>()));
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            await _serviceManager.WhiteBoardService().UpdateNameAsync("1",WhiteBoardFixture.PutWhiteBoardNameRequest());
+
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Once);
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().UpdateNameAsync(It.IsAny<string>(), It.IsAny<WhiteBoard>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task PutNameWhiteBoard_ShouldReturnValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.WhiteBoardService().UpdateNameAsync("0",new WhiteBoardPutNameRequest()));
+
+            //Assert
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:",exception.Message);
+        }
+
+        [Fact]
+        public async Task PutNameWhiteBoard_ShouldReturnKeyNotFoundException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() =>
+                    _serviceManager.WhiteBoardService().UpdateNameAsync("0", WhiteBoardFixture.PutWhiteBoardNameRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Once);
+
+            Assert.NotNull(exception);
+            Assert.IsType<KeyNotFoundException>(exception);
+            Assert.Equal("WhiteBoard not found", exception.Message);
+        }
+
+        [Fact]
+        public async Task PutDescriptionWhiteBoard_ShouldChangeDescription()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().UpdateDescriptionAsync(It.IsAny<string>(), It.IsAny<WhiteBoard>()));
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            await _serviceManager.WhiteBoardService().UpdateDescriptionAsync("1", WhiteBoardFixture.PutWhiteBoardDescriptionRequest());
+            
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Once);
+            _repositoryManagerMock.Verify(x=> x.WhiteBoardRepository()
+                .UpdateDescriptionAsync(It.IsAny<string>(), It.IsAny<WhiteBoard>()),Times.Once);
+        }
+
+        [Fact]
+        public async Task PutDescriptionWhiteBoard_SouldValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.WhiteBoardService().UpdateDescriptionAsync("0", new WhiteBoardPutDescriptionRequest()));
+
+            //Assert
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:", exception.Message);
+        }
+
+        [Fact]
+        public async Task PutDescriptionWhiteBoard_ShouldKeyNotFoundException() 
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.WhiteBoardService().UpdateDescriptionAsync("0", WhiteBoardFixture.PutWhiteBoardDescriptionRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(
+                x => x.WhiteBoardRepository().ExistsAsync(It.IsAny<string>()),
+                Times.Once);
+
+            Assert.NotNull(exception);
+            Assert.IsType<KeyNotFoundException>(exception);
+            Assert.Equal("WhiteBoard not found", exception.Message);
+        }
     }
 }

@@ -39,6 +39,18 @@ namespace OnKanBan.Domain.Entities
             this.LastUpdatedAt = DateTime.Now;
         }
 
+        public WhiteBoard(WhiteBoardPutNameRequest whiteBoardPutNameRequest)
+        {
+            this.Name = whiteBoardPutNameRequest.Name;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public WhiteBoard(WhiteBoardPutDescriptionRequest whiteBoardPutDescriptionRequest)
+        {
+            this.Description = whiteBoardPutDescriptionRequest.Description;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
         public WhiteBoardResponse Convert()
         {
             return new WhiteBoardResponse(this.Id,this.Name, this.Description, this.CreatedAt, this.LastUpdatedAt)
