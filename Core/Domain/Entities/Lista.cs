@@ -39,5 +39,9 @@ namespace OnKanBan.Domain.Entities
             this.Position = listaRequest.Position;
             this.WhiteBoardId = listaRequest.WhiteBoardId;
         }
+
+        public Lista(ListaPutNameRequest listaPutNameRequest)=> this.Name = listaPutNameRequest.Name;
+
+        public Lista(ListaPutPositionRequest listaPutPositionRequest) => this.Position = listaPutPositionRequest.Position;
     }
 }

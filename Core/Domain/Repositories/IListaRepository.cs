@@ -15,5 +15,7 @@ namespace Domain.Repositories
         Task<Lista> UpdateAsync(string id,Lista listaRequest);
         Task<bool> ExistsAsync(string id);
         Task DeleteAsync(string id);
+        Task UpdateNameAsync(string id, Lista listaRequest);
+        Task UpdatePositionAsync(string id, Lista listaRequest);
     }
 }

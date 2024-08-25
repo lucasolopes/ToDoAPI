@@ -17,5 +17,9 @@ namespace Services.Abstractions
         Task<ListaResponse> UpdateAsync(string id, ListaRequest listaRequest);
 
         Task DeleteAsync(string id);
+
+        Task UpdateNameAsync(string id, ListaPutNameRequest listaPutNameRequest);
+
+        Task UpdatePositionAsync(string id, ListaPutPositionRequest listaPutPositionRequest);
     }
 }

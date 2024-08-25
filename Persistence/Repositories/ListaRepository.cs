@@ -49,5 +49,21 @@ namespace Persistence.Repositories
             _context.Lista.Remove(lista);
             _context.SaveChanges();
         }
+
+        public async Task UpdateNameAsync(string id, Lista listaRequest)
+        {
+            Lista listaOld = await GetByIdAsync(id);
+            listaOld.Name = listaRequest.Name;
+            _context.Entry(listaOld).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdatePositionAsync(string id, Lista listaRequest)
+        {
+            Lista listaOld = await GetByIdAsync(id);
+            listaOld.Position = listaRequest.Position;
+            _context.Entry(listaOld).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
     }
 }

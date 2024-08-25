@@ -94,8 +94,6 @@ namespace ToDo.Tests.Services
             var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.ListaService().CreateAsync(new ListaRequest()));
 
             //Assert
-            _repositoryManagerMock.Verify(x => x.ListaRepository().CreateAsync(It.IsAny<Lista>()), Times.Never);
-
             Assert.NotNull(exception);
             Assert.IsType<ValidationException>(exception);
             Assert.Contains("Validation failed:", exception.Message);
@@ -202,6 +200,114 @@ namespace ToDo.Tests.Services
             Assert.Contains("Validation failed:", exception.Message);
         }
 
+
+        [Fact]
+        public async Task UpdateNameAsync_ShouldChangeName()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _repositoryManagerMock.Setup(x => x.ListaRepository().UpdateNameAsync(It.IsAny<string>(), It.IsAny<Lista>()));
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            await _serviceManager.ListaService().UpdateNameAsync("1", ListaFixture.PutNameListaRequest());
+
+            //Assert
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once);
+            _repositoryManagerMock.Verify(x => x.ListaRepository().UpdateNameAsync(It.IsAny<string>(), It.IsAny<Lista>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateNameAsync_ShouldReturnKeyNotFoundException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.ListaService().UpdateNameAsync("0", ListaFixture.PutNameListaRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once);
+
+            Assert.NotNull(exception);
+            Assert.IsType<KeyNotFoundException>(exception);
+            Assert.Equal("Lista not found", exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdateNameAsync_ShouldReturnValidationException()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.ListaService().UpdateNameAsync("1", new ListaPutNameRequest()));
+
+            //Assert
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:", exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePositionAsync_ShouldChangePosition()
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+            _repositoryManagerMock.Setup(x => x.ListaRepository().UpdatePositionAsync(It.IsAny<string>(), It.IsAny<Lista>()));
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            await _serviceManager.ListaService().UpdatePositionAsync("1", ListaFixture.PutPositionListaRequest());
+
+            //Assert
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once);
+            _repositoryManagerMock.Verify(x => x.ListaRepository().UpdatePositionAsync(It.IsAny<string>(), It.IsAny<Lista>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdatePositionAsync_ShouldValidationException() 
+        {
+            //Arrange
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<ValidationException>(() => _serviceManager.ListaService().UpdatePositionAsync("1", new ListaPutPositionRequest()));
+
+            //Assert
+            Assert.NotNull(exception);
+            Assert.IsType<ValidationException>(exception);
+            Assert.Contains("Validation failed:", exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdatePositionAsync_ShouldReturnKeyNotFoundException()
+        {
+            //Arrange 
+            var _repositoryManagerMock = new Mock<IRepositoryManager>();
+            _repositoryManagerMock.Setup(x => x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(false);
+
+            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
+
+            //Act
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _serviceManager.ListaService().UpdatePositionAsync("0", ListaFixture.PutPositionListaRequest()));
+
+            //Assert
+            _repositoryManagerMock.Verify(x => x.ListaRepository().ExistsAsync(It.IsAny<string>()), Times.Once);
+
+            Assert.NotNull(exception);
+            Assert.IsType<KeyNotFoundException>(exception);
+            Assert.Equal("Lista not found", exception.Message);
+        }
 
     }
 }

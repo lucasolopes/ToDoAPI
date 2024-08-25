@@ -52,5 +52,14 @@ namespace ToDo.Tests.Fixture
                 WhiteBoardId = "1"
             };
         
+        internal static ListaPutNameRequest PutNameListaRequest() => new ListaPutNameRequest
+            {
+                Name = "Test Lista Update"
+            };
+
+        internal static ListaPutPositionRequest PutPositionListaRequest() => new ListaPutPositionRequest
+            {
+                Position = 2
+            };
     }
 }

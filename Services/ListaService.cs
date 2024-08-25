@@ -35,7 +35,7 @@ namespace Services
         public async Task<ListaResponse> CreateAsync(ListaRequest listaRequest)
         {
             var validator = new ListaValidator();
-            var validationResult = validator.Validate(listaRequest);
+            var validationResult =  await validator.ValidateAsync(listaRequest);
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
 
@@ -47,7 +47,7 @@ namespace Services
         public async Task<ListaResponse> UpdateAsync(string id, ListaRequest listaRequest)
         {
             var validator = new ListaValidator();
-            var validationResult = validator.Validate(listaRequest);
+            var validationResult = await validator.ValidateAsync(listaRequest);
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
 
@@ -65,10 +65,38 @@ namespace Services
             await _repositoryManager.ListaRepository().DeleteAsync(id);
         }
 
+        public async Task UpdateNameAsync(string id, ListaPutNameRequest listaPutNameRequest)
+        {
+            var validator = new ListaPutNameValidator();
+            var validationResult = await validator.ValidateAsync(listaPutNameRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
+            await ExistAsync(id);
+
+            await _repositoryManager.ListaRepository().UpdateNameAsync(id, new Lista(listaPutNameRequest));
+
+
+        }
+
+        public async Task UpdatePositionAsync(string id, ListaPutPositionRequest listaPutPositionRequest)
+        {
+            var validator = new ListaPutPositionValidator();
+            var validationResult = await validator.ValidateAsync(listaPutPositionRequest);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
+            await ExistAsync(id);
+
+            await _repositoryManager.ListaRepository().UpdatePositionAsync(id, new Lista(listaPutPositionRequest));
+        }
+
         private async Task ExistAsync(string id)
         {
             if (!(await _repositoryManager.ListaRepository().ExistsAsync(id)))
                 throw new KeyNotFoundException("Lista not found");
         }
+
+   
     }
 }
