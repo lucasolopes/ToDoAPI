@@ -20,7 +20,7 @@ namespace Persistence.Repositories
         {
             await _context.AddAsync(card);
             await _context.SaveChangesAsync();
-            return _context.Cards.FirstOrDefault(c => c.Title == card.Title);
+            return  await _context.Cards.FirstOrDefaultAsync(c => c.Title == card.Title);
         }
 
         public async Task<Card> GetByIdAsync(string id)

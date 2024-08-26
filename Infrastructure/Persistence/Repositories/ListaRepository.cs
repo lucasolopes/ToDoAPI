@@ -47,7 +47,7 @@ namespace Persistence.Repositories
             Lista lista = await GetByIdAsync(id);
 
             _context.Lista.Remove(lista);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateNameAsync(string id, Lista listaRequest)
