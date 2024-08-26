@@ -650,26 +650,12 @@ namespace ToDo.Tests.Services
             Assert.Equal("Card not found", exception.Message);
         }
 
-        [Fact]
-        public async Task UpdateListaAsync_ShouldChangeLista()
-        {
-            //Arrange
-            var _repositoryManagerMock = new Mock<IRepositoryManager>();
-            _repositoryManagerMock.Setup(x => x.CardRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
-            _repositoryManagerMock.Setup(x=> x.ListaRepository().ExistsAsync(It.IsAny<string>())).ReturnsAsync(true);
+        /* The Squeezing Reordering implementar tbm realizar para Lista
+         * [Fact]
+         public async Task UpdateListaAsync_ShouldChangeLista()
+         {
 
-            //_repositoryManagerMock.Setup(x => x.CardRepository().UpdateListAsync(It.IsAny<string>(), It.IsAny<Card>()));
-
-            var _serviceManager = new ServiceManager(_repositoryManagerMock.Object);
-
-            //Act
-            //await _serviceManager.CardService().UpdateListAsync("1", CardFixture.PutCardListRequest());
-
-            //Assert
-            _repositoryManagerMock.Verify(
-                x => x.CardRepository().ExistsAsync(It.IsAny<string>()), 
-                Times.Once);
-        }
+         }*/
 
     }
 }
