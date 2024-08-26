@@ -8,8 +8,8 @@ namespace OnKanBan.Domain.Entities
 {
     public enum StatusEnum
     {
-        ToDo,
-        Doing,
-        Done    
+        ToDo = 0,
+        Doing = 1,
+        Done = 2    
     }
 }

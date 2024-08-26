@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Core\Services.Abstractions\Services.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\Core\Validators\Validators.csproj" />
+	  <ProjectReference Include="..\..\Shared\Shared.csproj" />
+	</ItemGroup>
+
+</Project>

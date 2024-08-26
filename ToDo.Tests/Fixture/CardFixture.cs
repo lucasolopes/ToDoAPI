@@ -21,8 +21,10 @@ namespace ToDo.Tests.Fixture
                 ListaId = "1",
                 Lista = ListaFixture.GetLista(),
                 Position = 1,
-                Status = StatusEnum.ToDo
-            };
+                Status = StatusEnum.ToDo,
+                DateCompleted = new DateTime(2024, 4, 4),
+                DateInit = new DateTime(2024, 3, 3),
+        };
        
 
         internal static CardRequest GetCardRequest() => new CardRequest
@@ -44,7 +46,9 @@ namespace ToDo.Tests.Fixture
             ListaId = "1",
             Lista = ListaFixture.GetLista(),
             Position = 2,
-            Status = StatusEnum.Done
+            Status = StatusEnum.Done,
+            DateCompleted = new DateTime(2024, 4, 4),
+            DateInit = new DateTime(2024, 3, 3),
         };
 
         internal static CardResponse GetCardResponse() => new CardResponse
@@ -54,8 +58,8 @@ namespace ToDo.Tests.Fixture
             Description = "Test Description",
             CreatedAt = new DateTime(2024, 1, 1),
             LastUpdatedAt = new DateTime(2024, 1, 1),
-            DateCompleted = null,
-            DateInit = null,
+            DateCompleted = new DateTime(2024, 4, 4),
+            DateInit = new DateTime(2024, 3, 3),
             Position = 1,
             Status = StatusEnum.ToDo.ToString(),
         };
@@ -67,10 +71,55 @@ namespace ToDo.Tests.Fixture
             Description = "Test Description Update",
             CreatedAt = new DateTime(2024, 2, 2),
             LastUpdatedAt = new DateTime(2024, 2, 2),
-            DateCompleted = null,
-            DateInit = null,
+            DateCompleted = new DateTime(2024, 4, 4),
+            DateInit = new DateTime(2024, 3, 3),
             Position = 2,
             Status = StatusEnum.Done.ToString(),
+        };
+
+        internal static CardPutNameRequest PutCardNameRequest() => new CardPutNameRequest
+        {
+            Title = "Test Card Update",
+        };
+
+        internal static CardPutDescriptionRequest PutCardDescriptionRequest() => new CardPutDescriptionRequest
+        {
+            Description = "Test Description Update",
+        };
+
+        internal static CardPutPositionRequest PutCardPositionRequest() => new CardPutPositionRequest
+        {
+            Position = 2,
+        };
+
+        internal static CardPutDateInitRequest PutCardDateInitRequest() => new CardPutDateInitRequest
+        {
+            Date = new DateTime(2024, 3, 3)
+        };
+
+        internal static CardPutDateInitRequest PutCardDateInitRequestInvalid() => new CardPutDateInitRequest
+        {
+            Date = new DateTime(2024, 5, 5)
+        };
+
+        internal static CardPutDateCompleteRequest PutCardDateCompleteRequest() => new CardPutDateCompleteRequest
+        {
+            Date = new DateTime(2024, 5, 5)
+        };
+
+        internal static CardPutDateCompleteRequest PutCardDateCompleteRequestInvalid() => new CardPutDateCompleteRequest
+        {
+            Date = new DateTime(2024, 2, 2)
+        };
+
+        internal static CardPutStatusRequest PutCardStatusRequest() => new CardPutStatusRequest
+        {
+            Status = (int) StatusEnum.Done
+        };
+
+        internal static CardPutStatusRequest PutCardStatusRequestInvalid() => new CardPutStatusRequest
+        {
+            Status = 4
         };
     }
 }

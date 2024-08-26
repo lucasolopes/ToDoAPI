@@ -36,6 +36,43 @@ namespace OnKanBan.Domain.Entities
             this.Description = request.Description;
             this.Position = request.Position;
             this.ListaId = request.ListaId;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutNameRequest request)
+        {
+            this.Title = request.Title;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutDescriptionRequest request)
+        {
+            this.Description = request.Description;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutPositionRequest request)
+        {
+            this.Position = request.Position;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutDateInitRequest request)
+        {
+            this.DateInit = request.Date;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutDateCompleteRequest request)
+        {
+            this.DateCompleted = request.Date;
+            this.LastUpdatedAt = DateTime.Now;
+        }
+
+        public Card(CardPutStatusRequest request)
+        {
+            this.Status = (StatusEnum) request.Status;
+            this.LastUpdatedAt = DateTime.Now;
         }
 
         public CardResponse Convert() => new CardResponse
