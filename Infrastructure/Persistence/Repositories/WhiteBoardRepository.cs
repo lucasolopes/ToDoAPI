@@ -21,7 +21,7 @@ namespace Persistence.Repositories
         {
             await _context.AddAsync(whiteBoard);
             await _context.SaveChangesAsync();
-            return _context.WhiteBoards.FirstOrDefault(wb=> wb.Name == whiteBoard.Name);
+            return await _context.WhiteBoards.FirstOrDefaultAsync(wb=> wb.Name == whiteBoard.Name);
         }
 
         public async Task<WhiteBoard> GetByIdAsync(string id)
@@ -44,7 +44,7 @@ namespace Persistence.Repositories
         {
             WhiteBoard whiteBoard = await GetByIdAsync(id);
             _context.WhiteBoards.Remove(whiteBoard);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public Task<bool> ExistsAsync(string id)

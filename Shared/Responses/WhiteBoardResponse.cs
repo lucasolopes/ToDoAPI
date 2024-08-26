@@ -20,13 +20,13 @@ namespace Shared.Responses
         {
         }
 
-        public WhiteBoardResponse(string id, string name, string? description, DateTime createdAt, DateTime LastUpdatedAt)
+        public WhiteBoardResponse(string id, string name, string? description, DateTime createdAt, DateTime lastUpdatedAt)
         {
-            Id = id;
-            Name = name;
-            Description = description;
-            CreatedAt = createdAt;
-            LastUpdatedAt = LastUpdatedAt;
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
+            this.CreatedAt = createdAt;
+            this.LastUpdatedAt = lastUpdatedAt;
         }
 
 

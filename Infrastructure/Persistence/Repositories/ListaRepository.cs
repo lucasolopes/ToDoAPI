@@ -26,7 +26,7 @@ namespace Persistence.Repositories
         {
             await _context.Lista.AddAsync(listaRequest);
             await _context.SaveChangesAsync();
-            return _context.Lista.AsNoTracking().FirstOrDefault(l => l.Name == listaRequest.Name);
+            return await _context.Lista.AsNoTracking().FirstOrDefaultAsync(l => l.Name == listaRequest.Name);
         }
 
         public async Task<Lista> UpdateAsync(string id, Lista listaRequest)
